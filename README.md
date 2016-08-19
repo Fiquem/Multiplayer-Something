@@ -3,3 +3,5 @@ I wanna try do some networking as practice for a multiplayer game some time in t
 
 ## PLAN
 I HAVE NO IDEA
+
+alright, I guess I should choose between p2p or server/host. server/host might be best? dunno if I like the idea of a p2p game
