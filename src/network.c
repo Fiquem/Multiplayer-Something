@@ -2,9 +2,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "network.h"
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -14,7 +11,7 @@
 #pragma comment (lib, "AdvApi32.lib")
 
 #define DEFAULT_PORT "27015"
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 2048
 
 char recvbuf[DEFAULT_BUFLEN];
 int iResult, iSendResult;
@@ -29,6 +26,18 @@ int init_network(){
         printf("WSAStartup failed: %d\n", iResult);
         return 1;
     }
+}
+
+int send_message(SOCKET s, const char* m){
+    iResult = send(s, m, (int) strlen(m), 0);
+    if (iResult == SOCKET_ERROR) {
+        printf("send failed: %d\n", WSAGetLastError());
+        closesocket(s);
+        WSACleanup();
+        return 1;
+    }
+
+    printf("Bytes Sent: %ld\n", iResult);
 }
 
 int client(int argc, char **argv){
@@ -87,19 +96,11 @@ int client(int argc, char **argv){
 
     int recvbuflen = DEFAULT_BUFLEN;
 
-    const char *sendbuf = "this is a test";
     char recvbuf[DEFAULT_BUFLEN];
 
     // Send an initial buffer
-    iResult = send(ConnectSocket, sendbuf, (int) strlen(sendbuf), 0);
-    if (iResult == SOCKET_ERROR) {
-        printf("send failed: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
-        return 1;
-    }
+    send_message(ConnectSocket, "test");
 
-    printf("Bytes Sent: %ld\n", iResult);
 
     // shutdown the connection for sending since no more data will be sent
     // the client can still use the ConnectSocket for receiving data
@@ -208,13 +209,8 @@ int server(){
             printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
-            iSendResult = send(ClientSocket, recvbuf, iResult, 0);
-            if (iSendResult == SOCKET_ERROR) {
-                printf("send failed: %d\n", WSAGetLastError());
-                closesocket(ClientSocket);
-                WSACleanup();
-                return 1;
-            }
+            send_message(ClientSocket, recvbuf);
+            
             printf("Bytes sent: %d\n", iSendResult);
         } else if (iResult == 0)
             printf("Connection closing...\n");
