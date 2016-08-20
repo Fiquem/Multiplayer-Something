@@ -6,12 +6,15 @@ int main(int argc, char **argv) {
 
     init_network();
 
-    if (argv[2] == 0){
+    if (argv[1][0] == '0'){
         printf("running server\n");
         server();
-    }else{
+    } else if (argv[1][0] == '1'){
         printf("running client\n");
         client(argc, argv);
+    } else {
+        printf("num args: %d. first arg: %s. second arg: %s\n", argc, argv[1], argv[2]);
+        printf("u fuct up sun\n");
     }
-    
+
 }
