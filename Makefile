@@ -6,7 +6,7 @@ CFLAGS = -g
 INC_DIR = -I ./lib/include
 LIB_DIR = -L ./lib/
 LOC_LIB = 
-SYS_LIB = -lws2_32
+SYS_LIB = -lws2_32 -lmswsock -ladvapi32
 
 all: $(TARGET)
 
