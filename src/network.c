@@ -40,6 +40,17 @@ int send_message(SOCKET s, const char* m){
     printf("Bytes Sent: %ld\n", iResult);
 }
 
+int close_connection(SOCKET ConnectSocket){
+    // shutdown the send half of the connection since no more data will be sent
+    iResult = shutdown(ConnectSocket, SD_SEND);
+    if (iResult == SOCKET_ERROR) {
+        printf("shutdown failed: %d\n", WSAGetLastError());
+        closesocket(ConnectSocket);
+        WSACleanup();
+        return 1;
+    }
+}
+
 int client(int argc, char **argv){
     // alright let's try this again
     struct addrinfo *result = NULL,
@@ -111,14 +122,7 @@ int client(int argc, char **argv){
         }
     } while (strcmp(recvbuf,"close") != 0);
 
-    // shutdown the send half of the connection since no more data will be sent
-    iResult = shutdown(ConnectSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        printf("shutdown failed: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
-        return 1;
-    }
+    close_connection(ConnectSocket);
 
     // cleanup
     closesocket(ConnectSocket);
@@ -207,15 +211,7 @@ int server(){
 
     } while (strcmp(recvbuf,"close") != 0);
 
-    // shutdown the send half of the connection since no more data will be sent
-    iResult = shutdown(ClientSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        printf("shutdown failed: %d\n", WSAGetLastError());
-        closesocket(ClientSocket);
-        WSACleanup();
-        return 1;
-    }
-
+    close_connection(ClientSocket);
     // cleanup
     closesocket(ClientSocket);
     WSACleanup();
