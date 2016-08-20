@@ -3,6 +3,11 @@
 #include "network.h"
 
 int main(int argc, char **argv) {
-    //client(argc, argv);
-    server();
+    if (argv[2] == 0){
+        printf("running server\n");
+        server();
+    }else{
+        printf("running client\n");
+        client(argc, argv);
+    }
 }

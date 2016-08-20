@@ -13,7 +13,7 @@ int iResult, iSendResult;
 int recvbuflen = DEFAULT_BUFLEN;
 
 int client(int argc, char **argv){
-		WSADATA wsaData;
+	WSADATA wsaData;
 
     // Initialize Winsock
     iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -130,6 +130,15 @@ int client(int argc, char **argv){
 }
 
 int server(){
+    WSADATA wsaData;
+
+    // Initialize Winsock
+    iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+    if (iResult != 0) {
+        printf("WSAStartup failed: %d\n", iResult);
+        return 1;
+    }
+
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
 	ZeroMemory(&hints, sizeof (hints));
