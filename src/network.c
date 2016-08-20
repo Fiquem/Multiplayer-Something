@@ -99,29 +99,17 @@ int client(int argc, char **argv){
     char recvbuf[DEFAULT_BUFLEN];
 
     // Send an initial buffer
-    send_message(ConnectSocket, "test");
-
-
-    // shutdown the connection for sending since no more data will be sent
-    // the client can still use the ConnectSocket for receiving data
-    iResult = shutdown(ConnectSocket, SD_SEND);
-    if (iResult == SOCKET_ERROR) {
-        printf("shutdown failed: %d\n", WSAGetLastError());
-        closesocket(ConnectSocket);
-        WSACleanup();
-        return 1;
-    }
+    send_message(ConnectSocket, "close");
 
     // Receive data until the server closes the connection
     do {
+        memset(recvbuf, 0, sizeof(recvbuf)); // magic, got weird chars at end of string without this
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-        if (iResult > 0)
+        if (iResult > 0){
             printf("Bytes received: %d\n", iResult);
-        else if (iResult == 0)
-            printf("Connection closed\n");
-        else
-            printf("recv failed: %d\n", WSAGetLastError());
-    } while (iResult > 0);
+            printf("received: %s\n", recvbuf);
+        }
+    } while (strcmp(recvbuf,"close") != 0);
 
     // shutdown the send half of the connection since no more data will be sent
     iResult = shutdown(ConnectSocket, SD_SEND);
@@ -203,25 +191,21 @@ int server(){
 
     // Receive until the peer shuts down the connection
     do {
-
+        memset(recvbuf, 0, sizeof(recvbuf));
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+        printf("sent: %s\n", recvbuf);
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
-            send_message(ClientSocket, recvbuf);
-            
-            printf("Bytes sent: %d\n", iSendResult);
-        } else if (iResult == 0)
-            printf("Connection closing...\n");
-        else {
-            printf("recv failed: %d\n", WSAGetLastError());
-            closesocket(ClientSocket);
-            WSACleanup();
-            return 1;
-        }
+            send_message(ClientSocket, "close");
+            printf("sent: %s\n", recvbuf);
 
-    } while (iResult > 0);
+            printf("Bytes sent: %d\n", iSendResult);
+        } else
+            printf("recv failed: %d\n", WSAGetLastError());
+
+    } while (strcmp(recvbuf,"close") != 0);
 
     // shutdown the send half of the connection since no more data will be sent
     iResult = shutdown(ClientSocket, SD_SEND);
