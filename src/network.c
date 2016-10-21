@@ -110,7 +110,7 @@ int client(int argc, char **argv){
     char recvbuf[DEFAULT_BUFLEN];
 
     // Send an initial buffer
-    send_message(ConnectSocket, "close");
+    send_message(ConnectSocket, "hello");
 
     // Receive data until the server closes the connection
     do {
@@ -197,7 +197,7 @@ int server(){
     do {
         memset(recvbuf, 0, sizeof(recvbuf));
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-        printf("sent: %s\n", recvbuf);
+        //printf("sent: %s\n", recvbuf);
         if (iResult > 0) {
             printf("Bytes received: %d\n", iResult);
 
@@ -206,9 +206,9 @@ int server(){
             printf("sent: %s\n", recvbuf);
 
             printf("Bytes sent: %d\n", iSendResult);
-        } else
-            printf("recv failed: %d\n", WSAGetLastError());
-
+        //} else
+        //    printf("recv failed: %d\n", WSAGetLastError());
+        }
     } while (strcmp(recvbuf,"close") != 0);
 
     close_connection(ClientSocket);

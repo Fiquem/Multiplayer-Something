@@ -1,4 +1,6 @@
 // started 19/08/16
+// looks like a proj I can copy from https://github.com/dtolj/simple-chat-client-server/blob/master/chat.c
+
 #include <stdio.h>
 #include "network.h"
 
