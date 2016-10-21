@@ -4,6 +4,7 @@
 #include "network.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "input.h"
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -37,7 +38,7 @@ int send_message(SOCKET s, const char* m){
         return 1;
     }
 
-    printf("Bytes Sent: %ld\n", iResult);
+    //printf("Bytes Sent: %ld\n", iResult);
 }
 
 int close_connection(SOCKET ConnectSocket){
@@ -197,15 +198,15 @@ int server(){
     do {
         memset(recvbuf, 0, sizeof(recvbuf));
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-        //printf("sent: %s\n", recvbuf);
         if (iResult > 0) {
-            printf("Bytes received: %d\n", iResult);
+            //printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
-            send_message(ClientSocket, "close");
-            printf("sent: %s\n", recvbuf);
+            printf("received: %s\n", recvbuf);
+            send_message(ClientSocket, recvbuf);
+            //send_message(ClientSocket, "close");
 
-            printf("Bytes sent: %d\n", iSendResult);
+            //printf("Bytes sent: %d\n", iSendResult);
         //} else
         //    printf("recv failed: %d\n", WSAGetLastError());
         }

@@ -1,6 +1,7 @@
 CC = g++
 SRC = src/main.c \
-	src/network.c
+	src/network.c \
+	src/input.c
 TARGET = networking
 CFLAGS = -g
 INC_DIR = -I ./lib/include
