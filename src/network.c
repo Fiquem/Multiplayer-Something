@@ -118,8 +118,10 @@ int client(int argc, char **argv){
         memset(recvbuf, 0, sizeof(recvbuf)); // magic, got weird chars at end of string without this
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0){
-            printf("Bytes received: %d\n", iResult);
+            //printf("Bytes received: %d\n", iResult);
             printf("received: %s\n", recvbuf);
+            char * sendbuf = getline();
+            send_message(ConnectSocket, sendbuf);
         }
     } while (strcmp(recvbuf,"close") != 0);
 
