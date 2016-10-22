@@ -4,7 +4,6 @@
 #include "network.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "input.h"
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -121,7 +120,11 @@ int client(int argc, char **argv){
             //printf("Bytes received: %d\n", iResult);
             printf("received: %s\n", recvbuf);
             char * sendbuf = getline();
-            send_message(ConnectSocket, sendbuf);
+            /*if (get_user_input_from_console())
+            {
+              send_message(ConnectSocket, current_message);
+              init_message();
+            }*/
         }
     } while (strcmp(recvbuf,"close") != 0);
 
