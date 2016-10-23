@@ -8,6 +8,7 @@ alright, I guess I should choose between p2p or server/host. server/host might b
 
 - mb start with a chat client?
 - OH JESUS DO I HAVE TO MULTITHREAD
+- yeah I gotta multithread, that's the next thing to do I guess
 
 ## How to use
 - Install MinGW/MSYS (need MSYS)

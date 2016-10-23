@@ -123,7 +123,7 @@ int client(int argc, char **argv){
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0){
             if (strcmp(recvbuf,"close") == 0) break;
-            printf("Bytes received: %d\n", iResult);
+            //printf("Bytes received: %d\n", iResult);
             printf("received: %s\n", recvbuf);
             char * sendbuf = getline();
             send_message(ConnectSocket, sendbuf);
@@ -195,40 +195,59 @@ int server(){
         return 1;
     }
 
-    SOCKET ClientSocket;
+    //SOCKET ClientSocket;
 
-    ClientSocket = INVALID_SOCKET;
+    //ClientSocket = INVALID_SOCKET;
+
+    connections[0] = INVALID_SOCKET;
 
     // Accept a client socket
-    ClientSocket = accept(ListenSocket, NULL, NULL);
+    /*ClientSocket = accept(ListenSocket, NULL, NULL);
     if (ClientSocket == INVALID_SOCKET) {
+        printf("accept failed: %d\n", WSAGetLastError());
+        closesocket(ListenSocket);
+        WSACleanup();
+        return 1;
+    }*/
+
+    // Accept a client socket
+    connections[0] = accept(ListenSocket, NULL, NULL);
+    if (connections[num_connections] == INVALID_SOCKET) {
         printf("accept failed: %d\n", WSAGetLastError());
         closesocket(ListenSocket);
         WSACleanup();
         return 1;
     }
 
+    num_connections++;
+
     // Receive until the peer shuts down the connection
     do {
+        for (int i = 0; i < num_connections; i++){
         memset(recvbuf, 0, sizeof(recvbuf));
-        iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+        iResult = recv(connections[i], recvbuf, recvbuflen, 0);
         if (iResult > 0) {
-            printf("Bytes received: %d\n", iResult);
+            //printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
             printf("received: %s\n", recvbuf);
-            send_message(ClientSocket, recvbuf);
+            for (int j = 0; j < num_connections; j++)
+              send_message(connections[j], recvbuf);
             //send_message(ClientSocket, "close");
 
             //printf("Bytes sent: %d\n", iSendResult);
         //} else
         //    printf("recv failed: %d\n", WSAGetLastError());
         }
+        }
     } while (strcmp(recvbuf,"close") != 0);
 
-    close_connection(ClientSocket);
-    // cleanup
-    closesocket(ClientSocket);
+    //close_connection(ClientSocket);
+    for (int i = 0; i < num_connections; i++){
+        close_connection(connections[i]);
+        // cleanup
+        closesocket(connections[i]);
+    }
     WSACleanup();
 
     return 0;
