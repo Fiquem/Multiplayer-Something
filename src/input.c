@@ -9,10 +9,15 @@ chat_message init_message()
 
 bool get_user_input_from_console(chat_message * m)
 {
+    char c = fgetc(stdin);
+    printf("adding %c to string", c);
+    if(c == '\n')
+    {
+        *(m->message) = '\0';
+        return true;
+    }
     m->len++;
-    *(m->message)++ = fgetc(stdin);
-    if(*(m->message) == '\n')
-      return true;
+    *(m->message)++ = c;
 }
 
 char * getline() {
@@ -41,8 +46,9 @@ char * getline() {
             linep = linen;
         }
 
-        if((*line++ = c) == '\n')
+        if(c == '\n')
             break;
+        *line++ = c;
     }
     *line = '\0';
     return linep;

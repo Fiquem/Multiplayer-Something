@@ -13,9 +13,12 @@
 #define DEFAULT_PORT "27015"
 #define DEFAULT_BUFLEN 2048
 
-char recvbuf[DEFAULT_BUFLEN];
 int iResult, iSendResult;
 int recvbuflen = DEFAULT_BUFLEN;
+
+// let's try add multiple connections
+SOCKET connections[100];
+int num_connections = 0;
 
 int init_network(){
     WSADATA wsaData;
@@ -119,7 +122,8 @@ int client(int argc, char **argv){
         memset(recvbuf, 0, sizeof(recvbuf)); // magic, got weird chars at end of string without this
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0){
-            //printf("Bytes received: %d\n", iResult);
+            if (strcmp(recvbuf,"close") == 0) break;
+            printf("Bytes received: %d\n", iResult);
             printf("received: %s\n", recvbuf);
             char * sendbuf = getline();
             send_message(ConnectSocket, sendbuf);
@@ -131,6 +135,7 @@ int client(int argc, char **argv){
         }
     } while (strcmp(recvbuf,"close") != 0);
 
+    printf("closing");
     close_connection(ConnectSocket);
 
     // cleanup
@@ -141,6 +146,7 @@ int client(int argc, char **argv){
 }
 
 int server(){
+        char recvbuf[DEFAULT_BUFLEN];
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
 	ZeroMemory(&hints, sizeof (hints));
@@ -207,7 +213,7 @@ int server(){
         memset(recvbuf, 0, sizeof(recvbuf));
         iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0) {
-            //printf("Bytes received: %d\n", iResult);
+            printf("Bytes received: %d\n", iResult);
 
             // Echo the buffer back to the sender
             printf("received: %s\n", recvbuf);
