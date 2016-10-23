@@ -1,18 +1,19 @@
 #include "input.h"
-/*
-void init_message()
+
+chat_message init_message()
 {
-    current_message_len = 0;
-    current_message = (char*)malloc(MAX_MESSAGE_LEN);
+    chat_message m;
+    m.len = 0;
+    m.message = (char*)malloc(MAX_MESSAGE_LEN);
 }
 
-bool get_user_input_from_console()
+bool get_user_input_from_console(chat_message * m)
 {
-    current_message_len++;
-    *current_message++ = fgetc(stdin);
-    if(*current_message == '\n')
+    m->len++;
+    *(m->message)++ = fgetc(stdin);
+    if(*(m->message) == '\n')
       return true;
-}*/
+}
 
 char * getline() {
     char * line = (char*)malloc(100);

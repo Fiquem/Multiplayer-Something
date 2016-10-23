@@ -5,9 +5,11 @@
 
 #define MAX_MESSAGE_LEN 32767
 
-//char * current_message;
-//int current_message_len;
+struct chat_message{
+  char * message;
+  int len;
+};
 
-void init_message();
-bool get_user_input_from_console();
+chat_message init_message();
+bool get_user_input_from_console(chat_message*);
 char * getline();

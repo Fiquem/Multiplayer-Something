@@ -112,6 +112,8 @@ int client(int argc, char **argv){
     // Send an initial buffer
     send_message(ConnectSocket, "hello");
 
+    chat_message m = init_message();
+
     // Receive data until the server closes the connection
     do {
         memset(recvbuf, 0, sizeof(recvbuf)); // magic, got weird chars at end of string without this
@@ -119,12 +121,12 @@ int client(int argc, char **argv){
         if (iResult > 0){
             //printf("Bytes received: %d\n", iResult);
             printf("received: %s\n", recvbuf);
-            char * sendbuf = getline();
-            /*if (get_user_input_from_console())
+            //char * sendbuf = getline();
+            if (get_user_input_from_console(&m))
             {
-              send_message(ConnectSocket, current_message);
-              init_message();
-            }*/
+              send_message(ConnectSocket, m.message);
+              m = init_message();
+            }
         }
     } while (strcmp(recvbuf,"close") != 0);
 
