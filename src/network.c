@@ -1,3 +1,5 @@
+// gonna have to redo with this tut http://www.win32developer.com/tutorial/winsock/winsock_tutorial_7.shtm
+
 #define _WIN32_WINNT  0x501
 #define WIN32_LEAN_AND_MEAN
 
